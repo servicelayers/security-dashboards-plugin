@@ -28,6 +28,7 @@ import {
 } from 'opensearch-dashboards/server';
 import HTTP from 'http';
 import HTTPS from 'https';
+import { ProxyAgent } from 'proxy-agent';
 import { PeerCertificate } from 'tls';
 import { Server, ServerStateCookieOptions } from '@hapi/hapi';
 import { SecurityPluginConfigType } from '../../..';
@@ -132,15 +133,21 @@ export class OpenIdAuthentication extends AuthenticationType {
     if (Object.keys(wreckHttpsOption).length > 0) {
       return wreck.defaults({
         agents: {
-          http: new HTTP.Agent(),
-          https: new HTTPS.Agent(wreckHttpsOption),
-          httpsAllowUnauthorized: new HTTPS.Agent({
+          http: new ProxyAgent(),
+          https: new ProxyAgent(wreckHttpsOption),
+          httpsAllowUnauthorized: new ProxyAgent({
             rejectUnauthorized: false,
           }),
         },
       });
     } else {
-      return wreck;
+      return wreck.defaults({
+        agents: {
+          http: new ProxyAgent(),
+          https: new ProxyAgent(),
+          httpsAllowUnauthorized:  new ProxyAgent()
+        }
+      });
     }
   }
 
