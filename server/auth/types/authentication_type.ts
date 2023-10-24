@@ -163,12 +163,18 @@ export abstract class AuthenticationType implements IAuthenticationType {
         cookie!.expiryTime = this.getKeepAliveExpiry(cookie!, request);
         this.sessionStorageFactory.asScoped(request).set(cookie!);
       }
-      // cookie is valid
-      // build auth header
-      const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!, request);
-      Object.assign(authHeaders, authHeadersFromCookie);
-      const additionalAuthHeader = await this.getAdditionalAuthHeader(request);
-      Object.assign(authHeaders, additionalAuthHeader);
+
+      // https://ic-consult.atlassian.net/browse/SLP-722
+      if (cookie && cookie.credentials && cookie.credentials.sl_workaround) {
+        Object.assign(authHeaders, { authorization: cookie.credentials.sl_workaround })
+        delete cookie.credentials.sl_workaround;
+      } else {
+        const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!, request);
+        Object.assign(authHeaders, authHeadersFromCookie);
+      }
+      // end of SLP-722
+      const additonalAuthHeader = await this.getAdditionalAuthHeader(request);
+      Object.assign(authHeaders, additonalAuthHeader);
     }
 
     // resolve tenant if necessary
