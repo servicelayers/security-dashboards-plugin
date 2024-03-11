@@ -29,6 +29,7 @@ import {
 } from 'opensearch-dashboards/server';
 import HTTP from 'http';
 import HTTPS from 'https';
+import { ProxyAgent } from 'proxy-agent';
 import { PeerCertificate } from 'tls';
 import { Server, ServerStateCookieOptions } from '@hapi/hapi';
 import { SecurityPluginConfigType } from '../../..';
@@ -187,7 +188,13 @@ export class OpenIdAuthentication extends AuthenticationType {
         },
       });
     } else {
-      return wreck;
+      return wreck.defaults({
+        agents: {
+          http: new ProxyAgent(),
+          https: new ProxyAgent(),
+          httpsAllowUnauthorized:  new ProxyAgent()
+        }
+      });
     }
   }
 
@@ -290,6 +297,7 @@ export class OpenIdAuthentication extends AuthenticationType {
           cookie.credentials = {
             authHeaderValueExtra: true,
             refresh_token: refreshTokenResponse.refreshToken,
+            sl_workaround: `Bearer ${refreshTokenResponse.idToken}`, // https://ic-consult.atlassian.net/browse/SLP-722
             expires_at: getExpirationDate(refreshTokenResponse), // expiresIn is in second
           };
 
