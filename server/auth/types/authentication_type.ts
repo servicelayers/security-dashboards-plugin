@@ -166,15 +166,15 @@ export abstract class AuthenticationType implements IAuthenticationType {
 
       // https://ic-consult.atlassian.net/browse/SLP-722
       if (cookie && cookie.credentials && cookie.credentials.sl_workaround) {
-        Object.assign(authHeaders, { authorization: cookie.credentials.sl_workaround })
+        Object.assign(authHeaders, { authorization: cookie.credentials.sl_workaround });
         delete cookie.credentials.sl_workaround;
       } else {
         const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!, request);
         Object.assign(authHeaders, authHeadersFromCookie);
       }
       // end of SLP-722
-      const additonalAuthHeader = await this.getAdditionalAuthHeader(request);
-      Object.assign(authHeaders, additonalAuthHeader);
+      const additionalAuthHeader = await this.getAdditionalAuthHeader(request);
+      Object.assign(authHeaders, additionalAuthHeader);
     }
 
     // resolve tenant if necessary
