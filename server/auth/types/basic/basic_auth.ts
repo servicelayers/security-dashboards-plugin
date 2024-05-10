@@ -133,10 +133,7 @@ export class BasicAuthentication extends AuthenticationType {
     }
   }
 
-  buildAuthHeaderFromCookie(
-    cookie: SecuritySessionCookie,
-    request: OpenSearchDashboardsRequest
-  ): any {
+  buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {
     if (this.config.auth.anonymous_auth_enabled && cookie.isAnonymousAuth) {
       return {};
     }

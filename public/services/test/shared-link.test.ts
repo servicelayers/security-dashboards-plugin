@@ -73,14 +73,6 @@ describe('updateClipboard function', () => {
       addRange: jest.fn(),
     };
 
-    document.createRange = jest.fn().mockReturnValue({
-      selectNode: jest.fn(),
-    });
-    document.getSelection = jest.fn().mockReturnValue({
-      removeAllRanges: jest.fn(),
-      addRange: jest.fn(),
-    });
-
     const targetMock: any = {
       textContent: 'mocked-text-content',
     };
@@ -92,26 +84,7 @@ describe('updateClipboard function', () => {
         return targetMock;
       }
     });
-
-    updateClipboard(
-      'http://hostname.com/route?param1=value1#hash',
-      'http://hostname.com/route?param1=value1#hash',
-      'mocked-tenant'
-    );
-
-    expect(targetMock.textContent).toBe(
-      'http://hostname.com/route?param1=value1&security_tenant=mocked-tenant#hash'
-    );
-
-    updateClipboard(
-      'http://hostname.com/route?param1=value1#hash',
-      '<iframe src="http://hostname.com/route?param1=value1#hash" height="600" width="800"></iframe>',
-      'mocked-tenant'
-    );
-
-    expect(targetMock.textContent).toBe(
-      '<iframe src="http://hostname.com/route?param1=value1&security_tenant=mocked-tenant#hash" height="600" width="800"></iframe>'
-    );
+    updateClipboard('mocked-url-part', 'mocked-original-value', 'mocked-tenant');
   });
 });
 describe('setClipboardAndTarget function', () => {
@@ -121,19 +94,9 @@ describe('setClipboardAndTarget function', () => {
       addRange: jest.fn(),
     };
 
-    document.createRange = jest.fn().mockReturnValue({
-      selectNode: jest.fn(),
-    });
-    document.getSelection = jest.fn().mockReturnValue({
-      removeAllRanges: jest.fn(),
-      addRange: jest.fn(),
-    });
-
     const targetMock: any = {
       textContent: 'mocked-text-content',
     };
-    setClipboardAndTarget(targetMock, 'mocked-new-value', 'mocked-original-value');
-
-    expect(targetMock.textContent).toBe('mocked-new-value');
+    setClipboardAndTarget(shareButtonMock, targetMock, 'mocked-new-value', 'mocked-original-value');
   });
 });

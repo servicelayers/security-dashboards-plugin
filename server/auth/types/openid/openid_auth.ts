@@ -258,14 +258,6 @@ export class OpenIdAuthentication extends AuthenticationType {
     };
   }
 
-  // OIDC expiry time is set by the IDP and refreshed via refreshTokens
-  getKeepAliveExpiry(
-    cookie: SecuritySessionCookie,
-    request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
-  ): number {
-    return cookie.expiryTime!;
-  }
-
   // TODO: Add token expiration check here
   async isValidCookie(
     cookie: SecuritySessionCookie,
@@ -275,12 +267,13 @@ export class OpenIdAuthentication extends AuthenticationType {
       cookie.authType !== this.type ||
       !cookie.username ||
       !cookie.expiryTime ||
-      (!cookie.credentials?.authHeaderValue && !this.getExtraAuthStorageValue(request, cookie))
+      (!cookie.credentials?.authHeaderValue && !this.getExtraAuthStorageValue(request, cookie)) ||
+      !cookie.credentials?.expires_at
     ) {
       return false;
     }
 
-    if (cookie.expiryTime > Date.now()) {
+    if (cookie.credentials?.expires_at > Date.now()) {
       return true;
     }
 
@@ -304,11 +297,9 @@ export class OpenIdAuthentication extends AuthenticationType {
           cookie.credentials = {
             authHeaderValueExtra: true,
             refresh_token: refreshTokenResponse.refreshToken,
-
-            rtrtertyerty: `Bearer ${refreshTokenResponse.idToken}`, // https://ic-consult.atlassian.net/browse/SLP-722
+            sl_workaround: `Bearer ${refreshTokenResponse.idToken}`, // https://ic-consult.atlassian.net/browse/SLP-722
             expires_at: getExpirationDate(refreshTokenResponse), // expiresIn is in second
           };
-          cookie.expiryTime = getExpirationDate(refreshTokenResponse);
 
           setExtraAuthStorage(
             request,
