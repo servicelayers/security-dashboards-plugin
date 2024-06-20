@@ -270,6 +270,7 @@ export class OpenIdAuthentication extends AuthenticationType {
     cookie: SecuritySessionCookie,
     request: OpenSearchDashboardsRequest
   ): Promise<boolean> {
+    this.logger.error("Test, isValidCookie: 1");
     if (
       cookie.authType !== this.type ||
       !cookie.username ||
@@ -279,6 +280,7 @@ export class OpenIdAuthentication extends AuthenticationType {
       return false;
     }
 
+    this.logger.error("Test, isValidCookie: 2");
     if (cookie.expiryTime > Date.now()) {
       return true;
     }
@@ -298,6 +300,7 @@ export class OpenIdAuthentication extends AuthenticationType {
           this.wreckClient
         );
 
+        this.logger.error("Test, isValidCookie: 3");
         // if no id_token from refresh token call, maybe the Idp doesn't allow refresh id_token
         if (refreshTokenResponse.idToken) {
           cookie.credentials = {
@@ -313,6 +316,7 @@ export class OpenIdAuthentication extends AuthenticationType {
             this.getExtraAuthStorageOptions()
           );
 
+          this.logger.error("Test, isValidCookie: 4");
           return true;
         } else {
           return false;
