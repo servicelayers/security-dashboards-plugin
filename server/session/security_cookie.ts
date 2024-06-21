@@ -68,7 +68,8 @@ export function getSecurityCookieOptions(
         return { isValid: true, path: '/' };
       }
 
-      if (sessionStorage.expiryTime === undefined || sessionStorage.expiryTime < Date.now()) {
+      // SL patch https://ic-consult.atlassian.net/browse/SLP-722
+      if (sessionStorage.expiryTime === undefined) {
         return { isValid: false, path: '/' };
       }
       return { isValid: true, path: '/' };

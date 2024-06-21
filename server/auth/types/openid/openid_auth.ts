@@ -306,7 +306,7 @@ export class OpenIdAuthentication extends AuthenticationType {
           cookie.credentials = {
             authHeaderValueExtra: true,
             refresh_token: refreshTokenResponse.refreshToken,
-            sl_workaround: `Bearer ${refreshTokenResponse.idToken}`, // https://ic-consult.atlassian.net/browse/SLP-722
+            sl_workaround: `Bearer ${refreshTokenResponse.idToken}`, // SL patch https://ic-consult.atlassian.net/browse/SLP-722
           };
           cookie.expiryTime = getExpirationDate(refreshTokenResponse);
 

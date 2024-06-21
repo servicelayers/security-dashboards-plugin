@@ -165,7 +165,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
         cookie!.expiryTime = this.getKeepAliveExpiry(cookie!, request);
         this.sessionStorageFactory.asScoped(request).set(cookie!);
       }
-      // https://ic-consult.atlassian.net/browse/SLP-722
+      // SL patch https://ic-consult.atlassian.net/browse/SLP-722
       this.logger.error("Test, authHandler: 4 " + cookie?.credentials.sl_workaround);
       if (cookie && cookie.credentials && cookie.credentials.sl_workaround) {
         Object.assign(authHeaders, { authorization: cookie.credentials.sl_workaround });
