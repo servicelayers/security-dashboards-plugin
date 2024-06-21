@@ -113,7 +113,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
     const authHeaders = {};
     let cookie: SecuritySessionCookie | null | undefined;
     let authInfo: any | undefined;
-    this.logger.error("Test, authHandler: 1");
     // if this is an REST API call, suppose the request includes necessary auth header
     if (this.requestIncludesAuthInfo(request)) {
       try {
@@ -143,7 +142,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
         cookie = undefined;
       }
 
-      this.logger.error("Test, authHandler: 2");
       if (!cookie || !(await this.isValidCookie(cookie, request))) {
         // clear cookie
         this.sessionStorageFactory.asScoped(request).clear();
@@ -159,27 +157,15 @@ export abstract class AuthenticationType implements IAuthenticationType {
         return this.handleUnauthedRequest(request, response, toolkit);
       }
 
-      this.logger.error("Test, authHandler: 3");
       // extend session expiration time
       if (this.config.session.keepalive) {
         cookie!.expiryTime = this.getKeepAliveExpiry(cookie!, request);
         this.sessionStorageFactory.asScoped(request).set(cookie!);
       }
-      // SL patch https://ic-consult.atlassian.net/browse/SLP-722
-      /*this.logger.error("Test, authHandler: 4 " + cookie?.credentials.sl_workaround);
-      if (cookie && cookie.credentials && cookie.credentials.sl_workaround) {
-        Object.assign(authHeaders, { authorization: cookie.credentials.sl_workaround });
-        delete cookie.credentials.sl_workaround;
-      } else {
-        const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!, request);
-        Object.assign(authHeaders, authHeadersFromCookie);
-      }*/
-      // end of SLP-722
       const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!, request);
       Object.assign(authHeaders, authHeadersFromCookie);
       const additionalAuthHeader = await this.getAdditionalAuthHeader(request);
       Object.assign(authHeaders, additionalAuthHeader);
-      this.logger.error("Test, authHandler: 5 " + authHeaders);
     }
 
     // resolve tenant if necessary
