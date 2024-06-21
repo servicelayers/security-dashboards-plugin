@@ -166,15 +166,17 @@ export abstract class AuthenticationType implements IAuthenticationType {
         this.sessionStorageFactory.asScoped(request).set(cookie!);
       }
       // SL patch https://ic-consult.atlassian.net/browse/SLP-722
-      this.logger.error("Test, authHandler: 4 " + cookie?.credentials.sl_workaround);
+      /*this.logger.error("Test, authHandler: 4 " + cookie?.credentials.sl_workaround);
       if (cookie && cookie.credentials && cookie.credentials.sl_workaround) {
         Object.assign(authHeaders, { authorization: cookie.credentials.sl_workaround });
         delete cookie.credentials.sl_workaround;
       } else {
         const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!, request);
         Object.assign(authHeaders, authHeadersFromCookie);
-      }
+      }*/
       // end of SLP-722
+      const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!, request);
+      Object.assign(authHeaders, authHeadersFromCookie);
       const additionalAuthHeader = await this.getAdditionalAuthHeader(request);
       Object.assign(authHeaders, additionalAuthHeader);
       this.logger.error("Test, authHandler: 5 " + authHeaders);
